@@ -1,0 +1,60 @@
+version: 2.1
+
+description: |
+  Core commands that are shared among different repositories.
+  https://github.com/renproject/circleci-orbs
+
+commands:
+  rw_checkout:
+    description: |
+      Clone the repository with Read/Write privileges.
+
+        * check that $GITHUB_TOKEN environment variable is set
+    parameters:
+      branch:
+        description: The name of the branch to be merged. Defaults to $CIRCLE_BRANCH
+        type: string
+        default: $CIRCLE_BRANCH
+    steps:
+      - run:
+          name: Check Environment Variables
+          command: |
+            if [[ -z "${GITHUB_TOKEN}" ]]; then
+              echo "GITHUB_TOKEN is not set, will not be able to push merge."
+              exit 1
+            fi
+      - run:
+          name: Clone Git Repository
+          command: |
+            WORKING_DIR=$(eval echo ${CIRCLE_WORKING_DIRECTORY})
+            RW_REPO_URL="https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+
+            if [ -e ${WORKING_DIR}/.git ]
+            then
+              cd ${WORKING_DIR}
+              git remote set-url origin "${RW_REPO_URL}" || true
+              git fetch --force origin "<< parameters.branch >>:remotes/origin/<< parameters.branch >>"
+            else
+              mkdir -p ${WORKING_DIR}
+              cd ${WORKING_DIR}
+              git clone --branch << parameters.branch >> ${RW_REPO_URL} .
+            fi
+            git fetch --all
+  merge:
+    description: "Merge from branch into another branch"
+    parameters:
+      from:
+        description: The branch with changes to be merged into another branch
+        type: string
+      into:
+        description: The branch onto which changes will be applied
+        type: string
+    steps:
+      - rw_checkout:
+          branch: << parameters.into >>
+      - run:
+          name: Merging branch
+          command: |
+            git merge origin/<< parameters.from >> -v
+            git push
+
