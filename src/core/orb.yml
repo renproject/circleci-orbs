@@ -78,27 +78,27 @@ commands:
 jobs:
   merge_nightly:
     parameters:
-      exec:
+      executor:
         type: executor
-    executor: << parameters.exec >>
+    executor: << parameters.executor >>
     steps:
       - merge:
           from: master
           into: nightly
   merge_beta:
     parameters:
-      exec:
+      executor:
         type: executor
-    executor: << parameters.exec >>
+    executor: << parameters.executor >>
     steps:
       - merge:
           from: nightly
           into: beta
   merge_stable:
     parameters:
-      exec:
+      executor:
         type: executor
-    executor: << parameters.exec >>
+    executor: << parameters.executor >>
     steps:
       - merge:
           from: beta
