@@ -73,3 +73,33 @@ commands:
                 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
                 sudo mv ./dep << parameters.path >>
             fi
+
+
+jobs:
+  merge_nightly:
+    parameters:
+      exec:
+        type: executor
+    executor: << parameters.exec >>
+    steps:
+      - merge:
+          from: master
+          into: nightly
+  merge_beta:
+    parameters:
+      exec:
+        type: executor
+    executor: << parameters.exec >>
+    steps:
+      - merge:
+          from: nightly
+          into: beta
+  merge_stable:
+    parameters:
+      exec:
+        type: executor
+    executor: << parameters.exec >>
+    steps:
+      - merge:
+          from: beta
+          into: stable
