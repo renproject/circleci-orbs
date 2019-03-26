@@ -41,7 +41,7 @@ commands:
             fi
             git fetch --all
   merge:
-    description: "Merge from branch into another branch"
+    description: Merge from branch into another branch
     parameters:
       from:
         description: The branch with changes to be merged into another branch
@@ -57,4 +57,19 @@ commands:
           command: |
             git merge origin/<< parameters.from >> -v
             git push
-
+  install_dep:
+    description: Installs go dep
+    parameters:
+      path:
+        description: The location to install dep to
+        type: string
+        default: /usr/local/bin
+    steps:
+      - run:
+          name: Installing dep
+          command: |
+            if ! [ -x "$(command -v dep)" ]; then
+                export INSTALL_DIRECTORY=.
+                curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+                sudo mv ./dep << parameters.path >>
+            fi
