@@ -91,6 +91,34 @@ commands:
             curl -L -s https://github.com/tcnksm/ghr/releases/download/<< parameters.version >>/ghr_<< parameters.version >>_linux_amd64.tar.gz -o ./ghr.tar.gz
             tar xvzf ./ghr.tar.gz
             sudo mv ./ghr_<< parameters.version >>_linux_amd64/ghr << parameters.path >>
+  github_release:
+    description: Makes a Github release
+    parameters:
+      tag:
+        description: The tag that the release should have
+        type: string
+      filelist:
+        description: The file containing list of filenames to release
+        type: string
+      prerelease:
+        description: Whether the release should be a prerelease or not
+        type: boolean
+        default: false
+    steps:
+      - run:
+          name: Check Environment Variables
+          command: |
+            if [[ -z "${GITHUB_TOKEN}" ]]; then
+              echo "GITHUB_TOKEN is not set, will not be able to push merge."
+              exit 1
+            fi
+      - run:
+          name: Creating Github Release
+          command: |
+            tmpdir=$(mktemp -d)
+            cat << parameters.filelist >> | xargs -I '{}' cp '{}' ${tmpdir}
+            ghr --delete <<# parameters.prerelease >>--prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
+            rm -rf ${tmpdir}
 
 
 jobs:
