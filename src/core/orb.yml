@@ -73,6 +73,24 @@ commands:
                 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
                 sudo mv ./dep << parameters.path >>
             fi
+  install_ghr:
+    description: Installs ghr (Github Release) tool
+    parameters:
+      path:
+        description: The location to install dep to
+        type: string
+        default: /usr/local/bin
+      version:
+        description: The version of ghr to install
+        type: string
+        default: v0.12.0
+    steps:
+      - run:
+          name: Installing ghr
+          command: |
+            curl -L -s https://github.com/tcnksm/ghr/releases/download/<< parameters.version >>/ghr_<< parameters.version >>_linux_amd64.tar.gz -o ./ghr.tar.gz
+            tar xvzf ./ghr.tar.gz
+            sudo mv ./ghr_<< parameters.version >>_linux_amd64/ghr << parameters.path >>
 
 
 jobs:
