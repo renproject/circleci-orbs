@@ -99,6 +99,7 @@ commands:
       - run:
           name: Install Wine
           command: |-
+            sudo dpkg --add-architecture i386
             sudo apt-get update
             sudo apt-get install --no-install-recommends --assume-yes wine wine32
   github_release:
