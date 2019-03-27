@@ -88,9 +88,11 @@ commands:
       - run:
           name: Installing ghr
           command: |
-            curl -L -s https://github.com/tcnksm/ghr/releases/download/<< parameters.version >>/ghr_<< parameters.version >>_linux_amd64.tar.gz -o ./ghr.tar.gz
-            tar xvzf ./ghr.tar.gz
-            sudo mv ./ghr_<< parameters.version >>_linux_amd64/ghr << parameters.path >>
+            if ! [ -x "$(command -v ghr)" ]; then
+                curl -L -s https://github.com/tcnksm/ghr/releases/download/<< parameters.version >>/ghr_<< parameters.version >>_linux_amd64.tar.gz -o ./ghr.tar.gz
+                tar xvzf ./ghr.tar.gz
+                sudo mv ./ghr_<< parameters.version >>_linux_amd64/ghr << parameters.path >>
+            fi
   github_release:
     description: Makes a Github release
     parameters:
