@@ -111,7 +111,7 @@ commands:
           name: Check Environment Variables
           command: |
             if [[ -z "${GITHUB_TOKEN}" ]]; then
-              echo "GITHUB_TOKEN is not set, will not be able to push merge."
+              echo "GITHUB_TOKEN is not set, will not be able to create Github Release."
               exit 1
             fi
       - run:
