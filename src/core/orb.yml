@@ -117,7 +117,7 @@ commands:
           command: |
             tmpdir=$(mktemp -d)
             cat << parameters.filelist >> | xargs -I '{}' cp '{}' ${tmpdir}
-            ghr --delete <<# parameters.prerelease >>--prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
+            ghr <<# parameters.prerelease >>--prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
             rm -rf ${tmpdir}
 
 
