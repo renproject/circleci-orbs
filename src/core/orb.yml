@@ -93,6 +93,14 @@ commands:
                 tar xvzf ./ghr.tar.gz
                 sudo mv ./ghr_<< parameters.version >>_linux_amd64/ghr << parameters.path >>
             fi
+  install_wine:
+    description: "Install Wine"
+    steps:
+      - run:
+          name: Install Wine
+          command: |-
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends --assume-yes wine wine32
   github_release:
     description: Makes a Github release
     parameters:
