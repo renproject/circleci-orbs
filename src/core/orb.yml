@@ -5,6 +5,20 @@ description: |
   https://github.com/renproject/circleci-orbs
 
 commands:
+  assert_env:
+    description: |
+      Ensures that a particular environment variable exists.
+    parameters:
+      variable:
+        type: env_var_name
+    steps:
+      - run:
+          name: Check Environment Variable
+          command: |
+            if [[ -z "${<< parameters.variable >>}" ]]; then
+              echo "<< parameters.variable >> is not set, will not be able to push merge."
+              exit 1
+            fi
   rw_checkout:
     description: |
       Clone the repository with Read/Write privileges.
@@ -16,13 +30,8 @@ commands:
         type: string
         default: $CIRCLE_BRANCH
     steps:
-      - run:
-          name: Check Environment Variables
-          command: |
-            if [[ -z "${GITHUB_TOKEN}" ]]; then
-              echo "GITHUB_TOKEN is not set, will not be able to push merge."
-              exit 1
-            fi
+      - assert_env:
+          variable: GITHUB_TOKEN
       - run:
           name: Clone Git Repository
           command: |
@@ -116,13 +125,8 @@ commands:
         type: boolean
         default: false
     steps:
-      - run:
-          name: Check Environment Variables
-          command: |
-            if [[ -z "${GITHUB_TOKEN}" ]]; then
-              echo "GITHUB_TOKEN is not set, will not be able to create Github Release."
-              exit 1
-            fi
+      - assert_env:
+          variable: GITHUB_TOKEN
       - run:
           name: Creating Github Release
           command: |
