@@ -19,6 +19,20 @@ commands:
               echo "<< parameters.variable >> is not set, will not be able to push merge."
               exit 1
             fi
+  git_token_remote:
+    description: |
+      Set the origin remote of the repository to use Github token.
+
+        * check that $GITHUB_TOKEN environment variable is set
+    steps:
+      - assert_env:
+          variable: GITHUB_TOKEN
+      - run:
+          name: Setting remote origin
+          command: |
+            RW_REPO_URL="https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+            git remote set-url origin "${RW_REPO_URL}" || true
+            git fetch --force --all
   rw_checkout:
     description: |
       Clone the repository with Read/Write privileges.
