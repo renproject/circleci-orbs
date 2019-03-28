@@ -141,7 +141,7 @@ commands:
       update_commit:
         description: Whether the commit hash of an existing release should be updated or not
         type: boolean
-        default: true
+        default: false
       flags:
         description: Additional flags to be passed to ghr
         type: string
