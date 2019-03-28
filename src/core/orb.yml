@@ -138,8 +138,8 @@ commands:
         description: Whether the release should be a prerelease or not
         type: boolean
         default: false
-      update_commit:
-        description: Whether the commit hash of an existing release should be updated or not
+      replace:
+        description: Whether an existing release should be replaced
         type: boolean
         default: false
       flags:
@@ -153,9 +153,9 @@ commands:
           command: |
             tmpdir=$(mktemp -d)
             cat << parameters.filelist >> | xargs -I '{}' cp '{}' ${tmpdir}
-            ghr -replace << parameters.flags>> <<# parameters.prerelease >>-prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
+            ghr <<# parameters.replace >>-replace <</ parameters.replace >><<# parameters.prerelease >>-prerelease <</ parameters.prerelease >><< parameters.flags>> << parameters.tag >> ${tmpdir}
             rm -rf ${tmpdir}
-            <<# parameters.update_commit >>git tag -f << parameters.tag >>; git push --tags --force<</ parameters.update_commit >>
+            <<# parameters.replace >>git tag -f << parameters.tag >>; git push --tags --force<</ parameters.replace >>
 
 jobs:
   merge_nightly:
