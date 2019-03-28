@@ -138,13 +138,16 @@ commands:
         description: Whether the release should be a prerelease or not
         type: boolean
         default: false
+      update_commit:
+        description: Whether the commit hash of an existing release should be updated or not
+        type: boolean
+        default: true
       flags:
         description: Additional flags to be passed to ghr
         type: string
         default: ""
     steps:
-      - assert_env:
-          variable: GITHUB_TOKEN
+      - git_token_remote
       - run:
           name: Creating Github Release
           command: |
@@ -152,7 +155,7 @@ commands:
             cat << parameters.filelist >> | xargs -I '{}' cp '{}' ${tmpdir}
             ghr -replace << parameters.flags>> <<# parameters.prerelease >>-prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
             rm -rf ${tmpdir}
-
+            <<# parameters.update_commit >>git tag -f << parameters.tag >>; git push --tags --force<</ parameters.update_commit >>
 
 jobs:
   merge_nightly:
