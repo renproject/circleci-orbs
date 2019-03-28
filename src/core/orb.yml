@@ -124,6 +124,10 @@ commands:
         description: Whether the release should be a prerelease or not
         type: boolean
         default: false
+      flags:
+        description: Additional flags to be passed to ghr
+        type: string
+        default: ""
     steps:
       - assert_env:
           variable: GITHUB_TOKEN
@@ -132,7 +136,7 @@ commands:
           command: |
             tmpdir=$(mktemp -d)
             cat << parameters.filelist >> | xargs -I '{}' cp '{}' ${tmpdir}
-            ghr -replace <<# parameters.prerelease >>-prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
+            ghr -replace << parameters.flags>> <<# parameters.prerelease >>-prerelease <</ parameters.prerelease >><< parameters.tag >> ${tmpdir}
             rm -rf ${tmpdir}
 
 
