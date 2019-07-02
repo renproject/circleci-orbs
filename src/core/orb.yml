@@ -96,6 +96,24 @@ commands:
                 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
                 sudo mv ./dep << parameters.path >>
             fi
+  install_vyper:
+    description: Installs Python3 and Vyper
+    steps:
+      - run:
+          name: Install Vyper
+          command: |
+            sudo apt-get update
+            sudo apt-get -y upgrade
+            sudo apt-get install build-essential libssl-dev libffi-dev
+            wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
+            tar xfz Python-3.6.2.tgz
+            cd Python-3.6.2/
+            ./configure --prefix /usr/local/lib/python3.6
+            sudo make
+            sudo make install
+            echo 'export PATH="$HOME/.local/bin:/usr/local/lib/python3.6/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+            pip3.6 install --user vyper
   install_ghr:
     description: Installs ghr (Github Release) tool
     parameters:
