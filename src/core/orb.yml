@@ -96,15 +96,27 @@ commands:
                 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
                 sudo mv ./dep << parameters.path >>
             fi
-  install_vyper:
-    description: Installs Python3 and Vyper
+  aptget_install:
+    description: Installs packages using apt-get install
+    parameters:
+      packages:
+        description: The packages to install
+        type: string
     steps:
       - run:
-          name: Install Vyper
+          name: Install packages
           command: |
             sudo apt-get update
             sudo apt-get -y upgrade
-            sudo apt-get install build-essential libssl-dev libffi-dev
+            sudo apt-get install --no-install-recommends --assume-yes << parameters.packages >>
+  install_vyper:
+    description: Installs Python3 and Vyper
+    steps:
+      - aptget_install:
+          packages: build-essential libssl-dev libffi-dev
+      - run:
+          name: Install Vyper
+          command: |
             wget https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
             tar xfz Python-3.6.2.tgz
             cd Python-3.6.2/
@@ -141,8 +153,8 @@ commands:
           name: Install Wine
           command: |-
             sudo dpkg --add-architecture i386
-            sudo apt-get update
-            sudo apt-get install --no-install-recommends --assume-yes wine wine32
+      - aptget_install:
+          packages: wine wine32
   github_release:
     description: Makes a Github release
     parameters:
